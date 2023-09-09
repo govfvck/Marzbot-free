@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  bot:
+    image: ghcr.io/govfvck/marzbot:latest
+    restart: on-failure
+    ports:
+      - "127.0.0.1:3333:3333"
+    env_file:
+      - .env
+
+    depends_on:
+      - mariadb
+      - redis
+
+  redis:
+    image: redis:alpine
+    restart: always
+    volumes:
+      - "/var/lib/marzbot/docker-volumes/redis:/data"
+    command: redis-server --appendonly yes --replica-read-only no
+
+  mariadb:
+    image: "mariadb:latest"
+    restart: always
+    volumes:
+      - /var/lib/marzbot/docker-volumes/mariadb:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234ggg
+      MYSQL_DATABASE: marzbot
+      MYSQL_USER: marzbot
+      MYSQL_PASSWORD: 1234ggg
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - "127.0.0.1:8010:80"
+    environment:
+      - PMA_HOST=mariadb

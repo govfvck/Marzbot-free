@@ -1,0 +1,85 @@
+version: '3'
+
+services:
+  marzban:
+    image: gozargah/marzban:latest
+    restart: always
+    env_file: .env.marzban
+    volumes:
+      - /var/lib/marzban:/var/lib/marzban
+    depends_on:
+      - marzban-db
+
+    networks:
+      - marznet
+  bot:
+    image: ghcr.io/govfvck/marzbot-free:latest
+    restart: on-failure
+    env_file:
+      - .env
+    depends_on:
+      - marzbot-db
+      - redis
+    networks:
+      - marznet
+
+  redis:
+    image: redis:alpine
+    restart: always
+    volumes:
+      - "/var/lib/marzban/docker-volumes/redis:/data"
+    command: redis-server --appendonly yes --replica-read-only no
+    networks:
+      - marznet
+
+  marzbot-db:
+    image: "mariadb:latest"
+    restart: always
+    volumes:
+      - /var/lib/marzban/docker-volumes/marzbot-mariadb:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234ggg
+      MYSQL_DATABASE: marzbot
+      MYSQL_USER: marzbot
+      MYSQL_PASSWORD: 1234ggg
+    networks:
+      - marznet
+
+  marzban-db:
+    image: "mariadb:latest"
+    restart: always
+    volumes:
+      - /var/lib/marzban/docker-volumes/marzban-mariadb:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234ggg
+      MYSQL_DATABASE: marzban
+      MYSQL_USER: marzban
+      MYSQL_PASSWORD: 1234ggg
+    networks:
+      - marznet
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - "127.0.0.1:8010:80"
+    environment:
+      - PMA_HOST: marzbot-db, marzban-db
+      - PMA_ARBITRARY: 1
+    networks:
+      - marznet
+
+  haproxy:
+    image: haproxy:latest
+    restart: always
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - /var/lib/marzban/haproxy.cfg:/etc/haproxy/haproxy.cfg
+    networks:
+      - marznet
+
+networks:
+  marznet:
+    driver: bridge
