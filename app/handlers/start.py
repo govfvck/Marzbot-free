@@ -29,13 +29,12 @@ async def main_menu_handler(
 ♻️ منوی اصلی ربات:
 🤖 چه کاری میتونم براتون انجام بدم؟👇
     """
-    referral = await Settings.bot_referral_system()
     if isinstance(qmsg, CallbackQuery):
         return await qmsg.message.answer(
             text,
-            reply_markup=MainMenu(referral=referral).as_markup(resize_keyboard=True),
+            reply_markup=MainMenu().as_markup(resize_keyboard=True),
         )
     return await qmsg.answer(
         text,
-        reply_markup=MainMenu(referral=referral).as_markup(resize_keyboard=True),
+        reply_markup=MainMenu().as_markup(resize_keyboard=True),
     )

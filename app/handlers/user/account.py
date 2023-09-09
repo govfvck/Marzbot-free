@@ -27,8 +27,7 @@ async def account(qmsg: Message | CallbackQuery, user: User):
 📲 شناسه کاربری: <code>{user.id}</code>
 💲 اعتبار در دسترس: <b>{balance:,}</b> تومان
 🔋 سرویس‌های فعال: <b>{await user.proxies.all().count()}</b>
-~~~~~~~~~~~~~~~~~~~~~~~~
-👤 نوع اکانت: {ACCOUNT_TYPE.get(user.role.name)}"""
+"""
 
     if isinstance(qmsg, CallbackQuery):
         return await qmsg.message.edit_text(

@@ -73,6 +73,8 @@ class NowPaymentsAPI:
         get_data: dict[str, Any] = None,
         post_data: dict[str, Any] = None,
     ):
+        if headers.get("x-api-key") is None:
+            raise NowPaymentsError("Nowpayments Api key is not defined!")
         async with httpx.AsyncClient(headers=headers) as client:
             url = config.NP_API_URL + path
             if method == "GET":

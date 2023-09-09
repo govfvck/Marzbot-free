@@ -15,17 +15,7 @@ from app.utils import helpers
 
 class SuperUserAccess(Filter):
     async def __call__(self, message: Message) -> bool:
-        return current_user.get().role == User.Role.super_user
-
-
-class AdminAccess(Filter):
-    async def __call__(self, message: Message) -> Any:
-        return current_user.get().role >= User.Role.admin
-
-
-class ResellerAccess(Filter):
-    async def __call__(self, message: Message) -> Any:
-        return current_user.get().role >= User.Role.reseller
+        return current_user.get().super_user
 
 
 class IsJoinedToChannel(Filter):

@@ -77,11 +77,12 @@ async def crypto_select_amount(query: CallbackQuery, user: User):
                 "📍 درحال حاضر امکان پرداخت ارز دیجیتال وجود ندارد! لطفا با پشتیبانی تماس بگیرید.",
                 show_alert=True,
             )
-    except NowPaymentsError:
-        return await query.answer(
+    except NowPaymentsError as exc:
+        await query.answer(
             "📍 درحال حاضر امکان پرداخت ارز دیجیتال وجود ندارد! لطفا با پشتیبانی تماس بگیرید.",
             show_alert=True,
         )
+        raise exc
 
     # fmt: off
     text = f"""

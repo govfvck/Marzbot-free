@@ -1,12 +1,17 @@
 import os
 import re
 
+from dotenv import load_dotenv
+
 if DOTENV_PATH := os.getenv("PYTHON_DOTENV_FILE"):
     from decouple import Config, RepositoryEnv
 
+    load_dotenv(DOTENV_PATH)
     config = Config(RepositoryEnv(DOTENV_PATH))
 else:
     from decouple import config
+
+    load_dotenv()
 
 from app.logger import get_logger
 

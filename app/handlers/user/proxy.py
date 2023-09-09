@@ -84,24 +84,12 @@ async def proxies(
             if callback_data and callback_data.user_id
             else user.id
         )
-        parent_id = (
-            callback_data.parent_id
-            if callback_data and callback_data.parent_id
-            else None
-        )
         page = callback_data.current_page if callback_data else 0
     else:
         user_id = user.id
-        parent_id = None
         page = 0
 
-    if (user.role < user.Role.admin) and (user_id != user.id):
-        return
     q = Proxy.filter(user_id=user_id).limit(11).offset(0 if page == 0 else page * 10)
-    if (user.role == user.Role.admin) and (
-        user_id != user.id
-    ):  # admin can only see their childs proxies and themselves
-        q = q.filter(user__parent_id=user.id)
 
     count = await q.count()
     if count < 1:
@@ -114,7 +102,6 @@ async def proxies(
     reply_markup = Proxies(
         proxies[:10],
         user_id=user_id,
-        parent_id=parent_id,
         current_page=page,
         next_page=True if count > 10 else False,
         prev_page=True if page > 0 else False,
