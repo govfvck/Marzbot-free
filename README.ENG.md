@@ -1,3 +1,4 @@
+[زبان فارسی](README.md)
 ## Free version of Marzbot sales robot
 
 This version is a free version and does not include many of the main management and application features of the robot.
